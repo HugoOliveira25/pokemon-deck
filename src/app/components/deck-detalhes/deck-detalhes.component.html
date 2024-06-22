@@ -1,0 +1,17 @@
+<igx-card class="p-4 border rounded shadow-md">
+  <igx-card-header>
+    <h1 igxCardHeaderTitle class="text-2xl font-bold mb-4">Detalhes do Baralho</h1>
+  </igx-card-header>
+  <igx-card-content>
+    <div class="mb-4">
+      <p><strong>Nome do Baralho:</strong> {{ deck?.name }}</p>
+      <p><strong>Total de Cartas:</strong> {{ totalCards }}</p>
+      <p><strong>Total de Pokémon:</strong> {{ totalPokemonCards }}</p>
+      <p><strong>Total de Cartas de Treinador:</strong> {{ totalTrainerCards }}</p>
+      <p><strong>Cores do Baralho:</strong> {{ uniqueTypes.join(', ') }}</p>
+    </div>
+  </igx-card-content>
+  <igx-card-actions class="flex justify-center">
+    <button class="bg-blue-500 text-white py-2 px-4 rounded mt-4" (click)="voltar()">Voltar à Lista</button>
+  </igx-card-actions>
+</igx-card>

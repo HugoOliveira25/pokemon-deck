@@ -1,0 +1,46 @@
+<div class="p-4">
+  <h1 class="text-2xl font-bold mb-4">Cadastro de Baralho</h1>
+  <button class="bg-blue-500 text-white py-2 px-4 rounded mt-4" (click)="voltar()">Voltar à Lista</button>
+  <form (ngSubmit)="onSubmit()" #deckForm="ngForm" class="mt-4">
+    <div class="mb-4">
+      <label for="name" class="block text-gray-700">Nome do Baralho:</label>
+      <input type="text" id="name" name="name" [(ngModel)]="deck.name" required
+        class="mt-1 p-2 border rounded w-64 focus:outline-none focus:ring focus:border-blue-500">
+    </div>
+    <div class="mb-4">
+      <label for="cardSelecionado" class="block text-gray-700">Cartas:</label>
+      <div class="relative">
+        <select id="cardSelecionado" name="cardSelecionado" [(ngModel)]="cardSelecionado"
+          class="mt-1 p-2 border rounded w-64 focus:outline-none focus:ring focus:border-blue-500">
+          <option disabled value="">Selecione uma carta</option>
+          <option *ngFor="let card of cards" [ngValue]="card">{{ card.name }}</option>
+        </select>
+        <span *ngIf="isLoading"> Carregando dados...</span>
+      </div>
+      <button type="button" class="bg-blue-500 text-white py-2 px-4 rounded mt-2" (click)="adicionarCard()">Adicionar Carta</button>
+    </div>
+    <div class="mb-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+      <ng-container *ngFor="let card of deck.cards">
+        <igx-card class="p-4 border rounded">
+          <div class="flex flex-col h-full">
+            <igx-card-header class="text-center">
+              <h2 class="text-lg font-semibold">{{ card.name }} ({{ card.count }})</h2>
+            </igx-card-header>
+            <div class="flex items-center justify-center">
+              <img [src]="card.img" alt="Imagem do Card" class="h-48">
+            </div>
+            <igx-card-actions class="flex justify-center mt-auto">
+              <button type="button" class="bg-red-500 text-white py-2 px-4 rounded"
+                (click)="removerCard(card)">Remover</button>
+            </igx-card-actions>
+          </div>
+        </igx-card>
+      </ng-container>
+    </div>
+    <div class="mb-4">
+      <p class="text-gray-700">Total de cartas: {{ totalCards }}</p>
+    </div>
+    <button type="submit" class="bg-green-500 text-white py-2 px-4 rounded"
+      [disabled]="!deckForm.form.valid || !isDeckValid()">Salvar Baralho</button>
+  </form>
+</div>
