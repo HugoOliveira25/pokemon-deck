@@ -1,19 +1,18 @@
 <div class="p-4">
   <h1 class="text-2xl font-bold mb-4">Cadastro de Baralho</h1>
   <button class="bg-blue-500 text-white py-2 px-4 rounded mt-4" (click)="voltar()">Voltar à Lista</button>
-  <form (ngSubmit)="onSubmit()" #deckForm="ngForm" class="mt-4">
+  <form [formGroup]="form" class="mt-4">
     <div class="mb-4">
       <label for="name" class="block text-gray-700">Nome do Baralho:</label>
-      <input type="text" id="name" name="name" [(ngModel)]="deck.name" required
-        class="mt-1 p-2 border rounded w-64 focus:outline-none focus:ring focus:border-blue-500">
+      <input type="text" id="name" name="name" formControlName="nomeBaralho" class="mt-1 p-2 border rounded w-64 focus:outline-none focus:ring focus:border-blue-500">
     </div>
     <div class="mb-4">
       <label for="cardSelecionado" class="block text-gray-700">Cartas:</label>
       <div class="relative">
-        <select id="cardSelecionado" name="cardSelecionado" [(ngModel)]="cardSelecionado"
+        <select id="cardSelecionado" name="cardSelecionado" formControlName="carta"
           class="mt-1 p-2 border rounded w-64 focus:outline-none focus:ring focus:border-blue-500">
           <option disabled value="">Selecione uma carta</option>
-          <option *ngFor="let card of cards" [ngValue]="card">{{ card.name }}</option>
+          <option *ngFor="let card of cards" [value]="card.name">{{ card.name }}</option>
         </select>
         <span *ngIf="isLoading"> Carregando dados...</span>
       </div>
@@ -41,6 +40,6 @@
       <p class="text-gray-700">Total de cartas: {{ totalCards }}</p>
     </div>
     <button type="submit" class="bg-green-500 text-white py-2 px-4 rounded"
-      [disabled]="!deckForm.form.valid || !isDeckValid()">Salvar Baralho</button>
+      [disabled]="!form.valid || !isDeckValid()" (click)="salvar()">Salvar Baralho </button>
   </form>
 </div>

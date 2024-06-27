@@ -6,8 +6,7 @@ import { DeckService } from 'src/app/services/deck-service';
 
 @Component({
   selector: 'app-deck-dialog-detalhes',
-  templateUrl: './deck-detalhes.component.html',
-  styleUrls: ['./deck-detalhes.component.scss']
+  templateUrl: './deck-detalhes.component.html'
 })
 
 export class DeckDetalhesComponent implements OnInit {

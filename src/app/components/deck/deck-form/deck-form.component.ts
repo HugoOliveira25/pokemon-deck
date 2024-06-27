@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { Card } from 'src/app/models/card-model';
@@ -8,31 +9,43 @@ import { PokemonService } from 'src/app/services/pokemon-service';
 
 @Component({
   selector: 'app-deck-form',
-  templateUrl: './deck-form.component.html',
-  styleUrls: ['./deck-form.component.scss']
+  templateUrl: './deck-form.component.html'
 })
 
 export class DeckFormComponent implements OnInit {
   deck: Deck = { name: '', cards: [] };
   cards: Card[] = [];
-  cardSelecionado: Card | null = null;
+  cardSelecionado!: string;
   isEdit = false;
   isLoading: boolean = false;
+  form!: FormGroup;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private pokemonTcgService: PokemonService,
-    private deckService: DeckService
+    private deckService: DeckService,
+    private formBuilder: FormBuilder
   ) { }
 
   ngOnInit(): void {
+
+    this.form = this.formBuilder.group({
+      nomeBaralho: ['', Validators.required],
+      carta: ['']
+    });
+
+    this.form.controls['nomeBaralho'].valueChanges.subscribe(value => this.deck.name = value);
+    this.form.controls['carta'].valueChanges.subscribe(value => this.cardSelecionado = value);
+
     this.route.paramMap.subscribe(params => {
       const deckId = Number(params.get('id'));
       if (deckId) {
         this.isEdit = true;
         const existingDeck = this.deckService.obterDeck(deckId);
+
         if (existingDeck) {
+          this.form.controls['nomeBaralho'].setValue(existingDeck.name);
           this.deck = { ...existingDeck };
         }
       }
@@ -54,13 +67,16 @@ export class DeckFormComponent implements OnInit {
 
   adicionarCard(): void {
     if (this.cardSelecionado) {
-      const existingCard = this.deck.cards.find(card => card.name === this.cardSelecionado!.name);
-      if (existingCard) {
-        if (existingCard.count! < 4) {
-          existingCard.count!++;
+      var card = this.cards.find(card => card.name === this.cardSelecionado);
+      if (card) {
+        const existingCard = this.deck.cards.find(deckCard => deckCard.name === card?.name);
+        if (existingCard) {
+          if (existingCard.count! < 4) {
+            existingCard.count!++;
+          }
+        } else {
+          this.deck.cards.push({ ...card, count: 1 });
         }
-      } else {
-        this.deck.cards.push({ ...this.cardSelecionado, count: 1 });
       }
     }
   }
@@ -84,7 +100,7 @@ export class DeckFormComponent implements OnInit {
     return this.totalCards >= 24 && this.totalCards <= 60;
   }
 
-  onSubmit(): void {
+  salvar(): void {
     if (this.isDeckValid()) {
       if (this.isEdit) {
         this.deckService.editarDeck(this.deck);
